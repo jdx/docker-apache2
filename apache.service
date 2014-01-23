@@ -1,0 +1,13 @@
+t]
+Description=Apache
+After=etcd.service
+After=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run -name apache -rm -p 8080:80 dickeyxxx/apache2
+ExecStartPost=/usr/bin/etcdctl set /apps/%H running
+ExecStop=/usr/bin/docker stop apache && /usr/bin/docker rm apache
+ExecStopPost=/usr/bin/etcdctl rm /apps/%H
+
+[Install]
+WantedBy=local.target
